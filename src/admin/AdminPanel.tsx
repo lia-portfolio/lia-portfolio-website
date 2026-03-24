@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Save, LogOut, Plus, Trash2, Loader2 } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Save, LogOut, Plus, Trash2, Loader2, Upload } from 'lucide-react'
 import { useOctokit } from './useOctokit'
 import { Toast } from '../components/ui/Toast'
 import type { ToastType } from '../components/ui/Toast'
@@ -21,6 +21,9 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'contact', label: 'Contact' },
 ]
 
+const inputCls =
+  'flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition text-sm'
+
 function Field({
   label,
   value,
@@ -34,8 +37,6 @@ function Field({
   multiline?: boolean
   placeholder?: string
 }) {
-  const cls =
-    'w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition text-sm'
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
@@ -45,7 +46,7 @@ function Field({
           onChange={(e) => onChange(e.target.value)}
           rows={4}
           placeholder={placeholder}
-          className={`${cls} resize-y`}
+          className={`w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition text-sm resize-y`}
         />
       ) : (
         <input
@@ -53,8 +54,81 @@ function Field({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className={cls}
+          className={`w-full ${inputCls}`}
         />
+      )}
+    </div>
+  )
+}
+
+function MediaField({
+  label,
+  value,
+  onChange,
+  accept,
+  placeholder,
+  uploadFile,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  accept: string
+  placeholder?: string
+  uploadFile: (file: File) => Promise<string>
+}) {
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadError('')
+    setUploading(true)
+    try {
+      const url = await uploadFile(file)
+      onChange(url)
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
+      setUploading(false)
+      if (inputRef.current) inputRef.current.value = ''
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className={inputCls}
+        />
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading}
+          title="Upload file"
+          className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
+        >
+          {uploading
+            ? <Loader2 className="w-4 h-4 animate-spin" />
+            : <Upload className="w-4 h-4" />}
+          {uploading ? 'Subiendo…' : 'Subir'}
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept={accept}
+          onChange={handleFile}
+          className="hidden"
+        />
+      </div>
+      {uploadError && (
+        <p className="text-xs text-red-500 dark:text-red-400">{uploadError}</p>
       )}
     </div>
   )
@@ -65,7 +139,7 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
   const [form, setForm] = useState<SiteContent>(contentJson as SiteContent)
   const [loading, setLoading] = useState(false)
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null)
-  const { saveContent } = useOctokit(token)
+  const { saveContent, uploadFile } = useOctokit(token)
 
   const update = <K extends keyof SiteContent>(section: K, value: SiteContent[K]) => {
     setForm((prev) => ({ ...prev, [section]: value }))
@@ -199,17 +273,21 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                 onChange={(v) => update('hero', { ...form.hero, tagline: v })}
                 placeholder="Artist & Visual Creator"
               />
-              <Field
+              <MediaField
                 label="Background Image URL"
                 value={form.hero.backgroundUrl}
                 onChange={(v) => update('hero', { ...form.hero, backgroundUrl: v })}
+                accept="image/*"
                 placeholder="https://example.com/hero-bg.jpg"
+                uploadFile={uploadFile}
               />
-              <Field
+              <MediaField
                 label="Background Video URL (takes priority over image)"
                 value={form.hero.videoUrl}
                 onChange={(v) => update('hero', { ...form.hero, videoUrl: v })}
+                accept="video/*"
                 placeholder="https://example.com/hero-bg.mp4"
+                uploadFile={uploadFile}
               />
             </>
           )}
@@ -227,11 +305,13 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                 multiline
                 placeholder="Write a short biography..."
               />
-              <Field
+              <MediaField
                 label="Photo URL"
                 value={form.about.photoUrl}
                 onChange={(v) => update('about', { ...form.about, photoUrl: v })}
+                accept="image/*"
                 placeholder="https://example.com/photo.jpg"
+                uploadFile={uploadFile}
               />
             </>
           )}
@@ -274,17 +354,21 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                     onChange={(v) => updatePainting(p.id, 'title', v)}
                     placeholder="Untitled No. 1"
                   />
-                  <Field
+                  <MediaField
                     label="Image URL"
                     value={p.imageUrl}
                     onChange={(v) => updatePainting(p.id, 'imageUrl', v)}
+                    accept="image/*"
                     placeholder="https://example.com/painting.jpg"
+                    uploadFile={uploadFile}
                   />
-                  <Field
+                  <MediaField
                     label="Video URL (takes priority over image)"
                     value={p.videoUrl}
                     onChange={(v) => updatePainting(p.id, 'videoUrl', v)}
+                    accept="video/*"
                     placeholder="https://example.com/painting.mp4"
+                    uploadFile={uploadFile}
                   />
                   <Field
                     label="Description"
@@ -335,17 +419,21 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                     onChange={(v) => updateOtherWork(w.id, 'title', v)}
                     placeholder="Photography Series"
                   />
-                  <Field
+                  <MediaField
                     label="Image URL"
                     value={w.imageUrl}
                     onChange={(v) => updateOtherWork(w.id, 'imageUrl', v)}
+                    accept="image/*"
                     placeholder="https://example.com/work.jpg"
+                    uploadFile={uploadFile}
                   />
-                  <Field
+                  <MediaField
                     label="Video URL (takes priority over image)"
                     value={w.videoUrl}
                     onChange={(v) => updateOtherWork(w.id, 'videoUrl', v)}
+                    accept="video/*"
                     placeholder="https://example.com/work.mp4"
+                    uploadFile={uploadFile}
                   />
                   <Field
                     label="Description"

@@ -40,5 +40,36 @@ export function useOctokit(token: string) {
     })
   }
 
-  return { saveContent }
+  const uploadFile = async (file: File): Promise<string> => {
+    const octokit = new Octokit({ auth: token })
+
+    // Read as raw binary → Base64 (correct for binary files like images/videos)
+    const buffer = await file.arrayBuffer()
+    const bytes = new Uint8Array(buffer)
+    let binary = ''
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i])
+    }
+    const base64 = btoa(binary)
+
+    // Unique filename: timestamp + sanitized original name
+    const sanitized = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+    const uniqueName = `${Date.now()}_${sanitized}`
+    const filePath = `public/uploads/${uniqueName}`
+
+    // Commit the file (always new due to timestamp prefix, no SHA needed)
+    await octokit.rest.repos.createOrUpdateFileContents({
+      owner: OWNER,
+      repo: REPO,
+      path: filePath,
+      message: `chore: upload media ${uniqueName}`,
+      content: base64,
+      branch: BRANCH,
+    })
+
+    // Return the public GitHub Pages URL
+    return `/lia-portfolio-website/uploads/${uniqueName}`
+  }
+
+  return { saveContent, uploadFile }
 }
