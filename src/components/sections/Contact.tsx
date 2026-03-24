@@ -1,4 +1,4 @@
-import { Mail, Instagram, Twitter, Linkedin, Send } from 'lucide-react'
+import { Mail, Phone, Instagram, Twitter, Linkedin, Send } from 'lucide-react'
 import content from '../../data/content.json'
 import type { SiteContent } from '../../types/content'
 
@@ -11,6 +11,12 @@ export function Contact() {
       label: 'Email',
       href: contact.email ? `mailto:${contact.email}` : null,
       text: contact.email || 'Not set',
+    },
+    {
+      icon: Phone,
+      label: 'Phone',
+      href: contact.phone ? `tel:${contact.phone}` : null,
+      text: contact.phone || 'Not set',
     },
     {
       icon: Instagram,

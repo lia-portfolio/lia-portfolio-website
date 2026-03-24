@@ -358,6 +358,12 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                 placeholder="lia@example.com"
               />
               <Field
+                label="Phone"
+                value={form.contact.phone}
+                onChange={(v) => update('contact', { ...form.contact, phone: v })}
+                placeholder="+34 600 000 000"
+              />
+              <Field
                 label="Instagram URL"
                 value={form.contact.instagram}
                 onChange={(v) => update('contact', { ...form.contact, instagram: v })}

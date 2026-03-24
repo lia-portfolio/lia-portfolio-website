@@ -26,6 +26,7 @@ export interface OtherWorkItem {
 
 export interface ContactContent {
   email: string
+  phone: string
   instagram: string
   twitter: string
   linkedin: string
