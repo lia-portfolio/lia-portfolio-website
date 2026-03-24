@@ -20,39 +20,32 @@ function WorkCard({ item, index }: { item: OtherWorkItem; index: number }) {
     <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
   ) : (
     <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-      <span className="font-serif italic text-3xl font-light text-brand-400 dark:text-brand-600 select-none">
-        {item.title[0]}
-      </span>
+      <span className="font-serif italic text-3xl font-light text-muted select-none">{item.title[0]}</span>
     </div>
   )
 
   const inner = (
-    <div className="group border border-brand-200 dark:border-brand-800 shadow-sm hover:shadow-md hover:border-brand-400 dark:hover:border-brand-600 transition-all duration-300">
+    <div className="group border border-rim hover:border-accent transition-all duration-300 shadow-sm hover:shadow-md">
       <div className="aspect-video overflow-hidden">{media}</div>
-      <div className="p-5 bg-brand-50 dark:bg-[#231b12]">
+      <div className="p-5 bg-surface">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-serif italic font-light text-lg text-brand-900 dark:text-brand-100">
-            {item.title}
-          </h3>
+          <h3 className="font-serif italic font-light text-lg text-ink">{item.title}</h3>
           {item.link && (
-            <ExternalLink className="w-3.5 h-3.5 text-brand-400 dark:text-brand-600 shrink-0 mt-1 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors" />
+            <ExternalLink className="w-3.5 h-3.5 text-muted shrink-0 mt-1 group-hover:text-accent transition-colors" />
           )}
         </div>
-        <p className="mt-2 font-sans text-sm text-brand-600 dark:text-brand-400 leading-relaxed">
-          {item.description}
-        </p>
+        <p className="mt-2 font-sans text-sm text-muted leading-relaxed">{item.description}</p>
       </div>
     </div>
   )
 
   if (item.link) {
     return (
-      <a href={item.link} target="_blank" rel="noopener noreferrer" className="block focus:outline-none focus:ring-1 focus:ring-brand-500">
+      <a href={item.link} target="_blank" rel="noopener noreferrer" className="block focus:outline-none focus:ring-1 focus:ring-accent">
         {inner}
       </a>
     )
   }
-
   return <div>{inner}</div>
 }
 
@@ -61,13 +54,10 @@ export function OtherWork() {
     <section id="other-work" className="py-28 px-6">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-5 mb-20 justify-center">
-          <span className="block flex-1 max-w-[80px] h-px bg-brand-300 dark:bg-brand-700" />
-          <h2 className="font-serif italic font-light text-3xl tracking-wide text-brand-900 dark:text-brand-100">
-            Other Work
-          </h2>
-          <span className="block flex-1 max-w-[80px] h-px bg-brand-300 dark:bg-brand-700" />
+          <span className="block flex-1 max-w-[80px] h-px bg-rim" />
+          <h2 className="font-serif italic font-light text-3xl tracking-wide text-ink">Other Work</h2>
+          <span className="block flex-1 max-w-[80px] h-px bg-rim" />
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {otherWork.map((item, i) => (
             <WorkCard key={item.id} item={item} index={i} />
