@@ -1,0 +1,392 @@
+import { useState } from 'react'
+import { Save, LogOut, Plus, Trash2, Loader2 } from 'lucide-react'
+import { useOctokit } from './useOctokit'
+import { Toast } from '../components/ui/Toast'
+import type { ToastType } from '../components/ui/Toast'
+import type { SiteContent, Painting, OtherWorkItem } from '../types/content'
+import contentJson from '../data/content.json'
+
+interface AdminPanelProps {
+  token: string
+  onLogout: () => void
+}
+
+type Tab = 'hero' | 'about' | 'paintings' | 'otherWork' | 'contact'
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'hero', label: 'Hero' },
+  { id: 'about', label: 'About Me' },
+  { id: 'paintings', label: 'Paintings' },
+  { id: 'otherWork', label: 'Other Work' },
+  { id: 'contact', label: 'Contact' },
+]
+
+function Field({
+  label,
+  value,
+  onChange,
+  multiline = false,
+  placeholder,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  multiline?: boolean
+  placeholder?: string
+}) {
+  const cls =
+    'w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition text-sm'
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
+      {multiline ? (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          rows={4}
+          placeholder={placeholder}
+          className={`${cls} resize-y`}
+        />
+      ) : (
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className={cls}
+        />
+      )}
+    </div>
+  )
+}
+
+export function AdminPanel({ token, onLogout }: AdminPanelProps) {
+  const [activeTab, setActiveTab] = useState<Tab>('hero')
+  const [form, setForm] = useState<SiteContent>(contentJson as SiteContent)
+  const [loading, setLoading] = useState(false)
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null)
+  const { saveContent } = useOctokit(token)
+
+  const update = <K extends keyof SiteContent>(section: K, value: SiteContent[K]) => {
+    setForm((prev) => ({ ...prev, [section]: value }))
+  }
+
+  const handleSave = async () => {
+    setLoading(true)
+    try {
+      await saveContent(form)
+      setToast({
+        message: 'Changes saved! Site is publishing — this may take ~2 minutes.',
+        type: 'success',
+      })
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unknown error'
+      setToast({ message: `Error saving: ${msg}`, type: 'error' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const addPainting = () => {
+    const newItem: Painting = { id: Date.now().toString(), title: '', imageUrl: '', description: '' }
+    update('paintings', [...form.paintings, newItem])
+  }
+
+  const removePainting = (id: string) => {
+    update('paintings', form.paintings.filter((p) => p.id !== id))
+  }
+
+  const updatePainting = (id: string, field: keyof Painting, value: string) => {
+    update(
+      'paintings',
+      form.paintings.map((p) => (p.id === id ? { ...p, [field]: value } : p))
+    )
+  }
+
+  const addOtherWork = () => {
+    const newItem: OtherWorkItem = {
+      id: Date.now().toString(),
+      title: '',
+      imageUrl: '',
+      description: '',
+      link: '',
+    }
+    update('otherWork', [...form.otherWork, newItem])
+  }
+
+  const removeOtherWork = (id: string) => {
+    update('otherWork', form.otherWork.filter((w) => w.id !== id))
+  }
+
+  const updateOtherWork = (id: string, field: keyof OtherWorkItem, value: string) => {
+    update(
+      'otherWork',
+      form.otherWork.map((w) => (w.id === id ? { ...w, [field]: value } : w))
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      {/* Top bar */}
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex items-center justify-between">
+        <div>
+          <h1 className="font-serif text-xl font-bold text-gray-900 dark:text-gray-100">
+            Admin Panel
+          </h1>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+            lia-portfolio / lia-portfolio-website
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors"
+          >
+            {loading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            {loading ? 'Saving…' : 'Save Changes'}
+          </button>
+          <button
+            onClick={onLogout}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 text-sm font-medium transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <div className="max-w-4xl mx-auto px-6 py-8">
+        {/* Tabs */}
+        <div className="flex gap-1 mb-8 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-1.5">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === tab.id
+                  ? 'bg-brand-600 text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab content */}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 flex flex-col gap-6">
+          {/* ── Hero ── */}
+          {activeTab === 'hero' && (
+            <>
+              <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+                Hero Section
+              </h2>
+              <Field
+                label="Name"
+                value={form.hero.name}
+                onChange={(v) => update('hero', { ...form.hero, name: v })}
+                placeholder="Lia"
+              />
+              <Field
+                label="Tagline"
+                value={form.hero.tagline}
+                onChange={(v) => update('hero', { ...form.hero, tagline: v })}
+                placeholder="Artist & Visual Creator"
+              />
+              <Field
+                label="Background Image URL"
+                value={form.hero.backgroundUrl}
+                onChange={(v) => update('hero', { ...form.hero, backgroundUrl: v })}
+                placeholder="https://example.com/hero-bg.jpg"
+              />
+            </>
+          )}
+
+          {/* ── About ── */}
+          {activeTab === 'about' && (
+            <>
+              <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+                About Me
+              </h2>
+              <Field
+                label="Biography"
+                value={form.about.text}
+                onChange={(v) => update('about', { ...form.about, text: v })}
+                multiline
+                placeholder="Write a short biography..."
+              />
+              <Field
+                label="Photo URL"
+                value={form.about.photoUrl}
+                onChange={(v) => update('about', { ...form.about, photoUrl: v })}
+                placeholder="https://example.com/photo.jpg"
+              />
+            </>
+          )}
+
+          {/* ── Paintings ── */}
+          {activeTab === 'paintings' && (
+            <>
+              <div className="flex items-center justify-between">
+                <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+                  Paintings
+                </h2>
+                <button
+                  onClick={addPainting}
+                  className="flex items-center gap-1.5 text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Painting
+                </button>
+              </div>
+              {form.paintings.map((p, i) => (
+                <div
+                  key={p.id}
+                  className="border border-gray-100 dark:border-gray-800 rounded-xl p-4 flex flex-col gap-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      Painting #{i + 1}
+                    </span>
+                    <button
+                      onClick={() => removePainting(p.id)}
+                      className="text-red-400 hover:text-red-600 transition-colors"
+                      aria-label="Remove painting"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <Field
+                    label="Title"
+                    value={p.title}
+                    onChange={(v) => updatePainting(p.id, 'title', v)}
+                    placeholder="Untitled No. 1"
+                  />
+                  <Field
+                    label="Image URL"
+                    value={p.imageUrl}
+                    onChange={(v) => updatePainting(p.id, 'imageUrl', v)}
+                    placeholder="https://example.com/painting.jpg"
+                  />
+                  <Field
+                    label="Description"
+                    value={p.description}
+                    onChange={(v) => updatePainting(p.id, 'description', v)}
+                    placeholder="Oil on canvas, 2024"
+                  />
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* ── Other Work ── */}
+          {activeTab === 'otherWork' && (
+            <>
+              <div className="flex items-center justify-between">
+                <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+                  Other Work
+                </h2>
+                <button
+                  onClick={addOtherWork}
+                  className="flex items-center gap-1.5 text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Item
+                </button>
+              </div>
+              {form.otherWork.map((w, i) => (
+                <div
+                  key={w.id}
+                  className="border border-gray-100 dark:border-gray-800 rounded-xl p-4 flex flex-col gap-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      Item #{i + 1}
+                    </span>
+                    <button
+                      onClick={() => removeOtherWork(w.id)}
+                      className="text-red-400 hover:text-red-600 transition-colors"
+                      aria-label="Remove item"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <Field
+                    label="Title"
+                    value={w.title}
+                    onChange={(v) => updateOtherWork(w.id, 'title', v)}
+                    placeholder="Photography Series"
+                  />
+                  <Field
+                    label="Image URL"
+                    value={w.imageUrl}
+                    onChange={(v) => updateOtherWork(w.id, 'imageUrl', v)}
+                    placeholder="https://example.com/work.jpg"
+                  />
+                  <Field
+                    label="Description"
+                    value={w.description}
+                    onChange={(v) => updateOtherWork(w.id, 'description', v)}
+                    placeholder="A short description..."
+                  />
+                  <Field
+                    label="External Link (optional)"
+                    value={w.link}
+                    onChange={(v) => updateOtherWork(w.id, 'link', v)}
+                    placeholder="https://..."
+                  />
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* ── Contact ── */}
+          {activeTab === 'contact' && (
+            <>
+              <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+                Contact & Social
+              </h2>
+              <Field
+                label="Email"
+                value={form.contact.email}
+                onChange={(v) => update('contact', { ...form.contact, email: v })}
+                placeholder="lia@example.com"
+              />
+              <Field
+                label="Instagram URL"
+                value={form.contact.instagram}
+                onChange={(v) => update('contact', { ...form.contact, instagram: v })}
+                placeholder="https://instagram.com/lia"
+              />
+              <Field
+                label="Twitter / X URL"
+                value={form.contact.twitter}
+                onChange={(v) => update('contact', { ...form.contact, twitter: v })}
+                placeholder="https://x.com/lia"
+              />
+              <Field
+                label="LinkedIn URL"
+                value={form.contact.linkedin}
+                onChange={(v) => update('contact', { ...form.contact, linkedin: v })}
+                placeholder="https://linkedin.com/in/lia"
+              />
+            </>
+          )}
+        </div>
+      </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+    </div>
+  )
+}

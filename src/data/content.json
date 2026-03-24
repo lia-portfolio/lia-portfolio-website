@@ -1,0 +1,53 @@
+{
+  "hero": {
+    "name": "Lia Viniegra",
+    "tagline": "Artist & Visual Creator",
+    "backgroundUrl": ""
+  },
+  "about": {
+    "text": "Welcome to my world of art and visual storytelling. I create paintings and mixed-media works that explore the intersection of emotion, color, and form. Each piece is a conversation between intention and intuition — a search for meaning in texture, light, and movement.",
+    "photoUrl": ""
+  },
+  "paintings": [
+    {
+      "id": "1",
+      "title": "Untitled No. 1",
+      "imageUrl": "",
+      "description": "Oil on canvas, 2024"
+    },
+    {
+      "id": "2",
+      "title": "Untitled No. 2",
+      "imageUrl": "",
+      "description": "Acrylic on linen, 2024"
+    },
+    {
+      "id": "3",
+      "title": "Untitled No. 3",
+      "imageUrl": "",
+      "description": "Watercolor on paper, 2023"
+    }
+  ],
+  "otherWork": [
+    {
+      "id": "1",
+      "title": "Digital Series I",
+      "imageUrl": "",
+      "description": "A digital exploration of texture and light.",
+      "link": ""
+    },
+    {
+      "id": "2",
+      "title": "Photography",
+      "imageUrl": "",
+      "description": "Analog film photography exploring urban landscapes.",
+      "link": ""
+    }
+  ],
+  "contact": {
+    "email": "",
+    "instagram": "",
+    "twitter": "",
+    "linkedin": ""
+  }
+}
