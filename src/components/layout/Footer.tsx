@@ -6,7 +6,7 @@ export function Footer() {
           Lia
         </span>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          © {new Date().getFullYear()} Lia. All rights reserved.
+          © {new Date().getFullYear()} Lia Viniegra. All rights reserved.
         </p>
       </div>
     </footer>
