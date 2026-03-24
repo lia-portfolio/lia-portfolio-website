@@ -5,12 +5,15 @@ import type { SiteContent } from '../../types/content'
 const { hero } = content as SiteContent
 
 export function Hero() {
+  const hasVideo = Boolean(hero.videoUrl)
+  const hasImage = Boolean(hero.backgroundUrl)
+
   return (
     <section
       id="hero"
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       style={
-        hero.backgroundUrl
+        !hasVideo && hasImage
           ? {
               backgroundImage: `url(${hero.backgroundUrl})`,
               backgroundSize: 'cover',
@@ -19,8 +22,20 @@ export function Hero() {
           : undefined
       }
     >
-      {/* Gradient fallback when no background image */}
-      {!hero.backgroundUrl && (
+      {/* Video background */}
+      {hasVideo && (
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={hero.videoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+      )}
+
+      {/* Gradient fallback when no media */}
+      {!hasVideo && !hasImage && (
         <div className="absolute inset-0 bg-gradient-to-br from-brand-900 via-gray-900 to-gray-950" />
       )}
 

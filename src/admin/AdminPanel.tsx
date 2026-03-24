@@ -88,7 +88,7 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
   }
 
   const addPainting = () => {
-    const newItem: Painting = { id: Date.now().toString(), title: '', imageUrl: '', description: '' }
+    const newItem: Painting = { id: Date.now().toString(), title: '', imageUrl: '', videoUrl: '', description: '' }
     update('paintings', [...form.paintings, newItem])
   }
 
@@ -108,6 +108,7 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
       id: Date.now().toString(),
       title: '',
       imageUrl: '',
+      videoUrl: '',
       description: '',
       link: '',
     }
@@ -204,6 +205,12 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                 onChange={(v) => update('hero', { ...form.hero, backgroundUrl: v })}
                 placeholder="https://example.com/hero-bg.jpg"
               />
+              <Field
+                label="Background Video URL (takes priority over image)"
+                value={form.hero.videoUrl}
+                onChange={(v) => update('hero', { ...form.hero, videoUrl: v })}
+                placeholder="https://example.com/hero-bg.mp4"
+              />
             </>
           )}
 
@@ -274,6 +281,12 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                     placeholder="https://example.com/painting.jpg"
                   />
                   <Field
+                    label="Video URL (takes priority over image)"
+                    value={p.videoUrl}
+                    onChange={(v) => updatePainting(p.id, 'videoUrl', v)}
+                    placeholder="https://example.com/painting.mp4"
+                  />
+                  <Field
                     label="Description"
                     value={p.description}
                     onChange={(v) => updatePainting(p.id, 'description', v)}
@@ -327,6 +340,12 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
                     value={w.imageUrl}
                     onChange={(v) => updateOtherWork(w.id, 'imageUrl', v)}
                     placeholder="https://example.com/work.jpg"
+                  />
+                  <Field
+                    label="Video URL (takes priority over image)"
+                    value={w.videoUrl}
+                    onChange={(v) => updateOtherWork(w.id, 'videoUrl', v)}
+                    placeholder="https://example.com/work.mp4"
                   />
                   <Field
                     label="Description"

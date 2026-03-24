@@ -14,6 +14,62 @@ const PLACEHOLDER_COLORS = [
   'from-lime-200 to-green-300 dark:from-lime-900 dark:to-gray-800',
 ]
 
+function MediaPreview({ painting, gradient }: { painting: Painting; gradient: string }) {
+  if (painting.videoUrl) {
+    return (
+      <video
+        src={painting.videoUrl}
+        className="w-full h-full object-cover"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+    )
+  }
+  if (painting.imageUrl) {
+    return (
+      <img src={painting.imageUrl} alt={painting.title} className="w-full h-full object-cover" />
+    )
+  }
+  return (
+    <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+      <span className="font-serif text-4xl font-bold text-white/40 select-none">
+        {painting.title[0]}
+      </span>
+    </div>
+  )
+}
+
+function LightboxMedia({ painting }: { painting: Painting }) {
+  if (painting.videoUrl) {
+    return (
+      <video
+        src={painting.videoUrl}
+        className="w-full max-h-[80vh] rounded-lg"
+        controls
+        autoPlay
+      />
+    )
+  }
+  if (painting.imageUrl) {
+    return (
+      <img
+        src={painting.imageUrl}
+        alt={painting.title}
+        className="w-full max-h-[80vh] object-contain rounded-lg"
+      />
+    )
+  }
+  return (
+    <div className="w-full aspect-[4/5] max-h-[70vh] bg-gradient-to-br from-brand-900 to-gray-800 rounded-lg flex items-center justify-center">
+      <span className="font-serif text-8xl font-bold text-white/20 select-none">
+        {painting.title[0]}
+      </span>
+    </div>
+  )
+}
+
 function PaintingCard({
   painting,
   index,
@@ -32,19 +88,7 @@ function PaintingCard({
       aria-label={`View ${painting.title}`}
     >
       <div className="aspect-[4/5]">
-        {painting.imageUrl ? (
-          <img
-            src={painting.imageUrl}
-            alt={painting.title}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-            <span className="font-serif text-4xl font-bold text-white/40 select-none">
-              {painting.title[0]}
-            </span>
-          </div>
-        )}
+        <MediaPreview painting={painting} gradient={gradient} />
       </div>
       {/* Hover overlay */}
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex flex-col items-center justify-end p-6">
@@ -105,23 +149,8 @@ export function Paintings() {
             <X className="w-8 h-8" />
           </button>
 
-          <div
-            className="max-w-3xl w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {selected.imageUrl ? (
-              <img
-                src={selected.imageUrl}
-                alt={selected.title}
-                className="w-full max-h-[80vh] object-contain rounded-lg"
-              />
-            ) : (
-              <div className="w-full aspect-[4/5] max-h-[70vh] bg-gradient-to-br from-brand-900 to-gray-800 rounded-lg flex items-center justify-center">
-                <span className="font-serif text-8xl font-bold text-white/20 select-none">
-                  {selected.title[0]}
-                </span>
-              </div>
-            )}
+          <div className="max-w-3xl w-full" onClick={(e) => e.stopPropagation()}>
+            <LightboxMedia painting={selected} />
             <div className="mt-4 text-center">
               <h3 className="font-serif text-2xl font-bold text-white">{selected.title}</h3>
               <p className="text-white/60 mt-1">{selected.description}</p>

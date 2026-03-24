@@ -2,6 +2,7 @@ export interface HeroContent {
   name: string
   tagline: string
   backgroundUrl: string
+  videoUrl: string
 }
 
 export interface AboutContent {
@@ -13,6 +14,7 @@ export interface Painting {
   id: string
   title: string
   imageUrl: string
+  videoUrl: string
   description: string
 }
 
@@ -20,6 +22,7 @@ export interface OtherWorkItem {
   id: string
   title: string
   imageUrl: string
+  videoUrl: string
   description: string
   link: string
 }

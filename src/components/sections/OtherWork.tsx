@@ -14,21 +14,28 @@ const PLACEHOLDER_COLORS = [
 function WorkCard({ item, index }: { item: OtherWorkItem; index: number }) {
   const gradient = PLACEHOLDER_COLORS[index % PLACEHOLDER_COLORS.length]
 
+  const media = item.videoUrl ? (
+    <video
+      src={item.videoUrl}
+      className="w-full h-full object-cover"
+      autoPlay
+      muted
+      loop
+      playsInline
+    />
+  ) : item.imageUrl ? (
+    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+  ) : (
+    <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+      <span className="font-serif text-4xl font-bold text-white/40 select-none">
+        {item.title[0]}
+      </span>
+    </div>
+  )
+
   const inner = (
     <div className="group relative overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
-      <div className="aspect-video">
-        {item.imageUrl ? (
-          <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
-        ) : (
-          <div
-            className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}
-          >
-            <span className="font-serif text-4xl font-bold text-white/40 select-none">
-              {item.title[0]}
-            </span>
-          </div>
-        )}
-      </div>
+      <div className="aspect-video">{media}</div>
       <div className="p-5 bg-white dark:bg-gray-900">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
@@ -45,7 +52,12 @@ function WorkCard({ item, index }: { item: OtherWorkItem; index: number }) {
 
   if (item.link) {
     return (
-      <a href={item.link} target="_blank" rel="noopener noreferrer" className="focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-2xl block">
+      <a
+        href={item.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-2xl block"
+      >
         {inner}
       </a>
     )
