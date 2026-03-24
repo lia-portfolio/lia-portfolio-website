@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Semantic color variables ─────────────────────────────────────────────
+   Values are RGB triplets (no rgb() wrapper) so Tailwind's opacity modifier
+   works: bg-surface/50 → rgb(232 226 210 / 0.5)
+   ─────────────────────────────────────────────────────────────────────── */
+:root {
+  --color-bg:      244 241 234;   /* #F4F1EA  — fondo principal */
+  --color-surface: 232 226 210;   /* #E8E2D2  — tarjetas, menús */
+  --color-ink:     58  53  50;    /* #3A3532  — texto principal */
+  --color-muted:   122 115 107;   /* #7A736B  — texto secundario */
+  --color-rim:     206 200 184;   /* #CEC8B8  — bordes/divisores */
+  --color-accent:  179 122 104;   /* #B37A68  — acento principal */
+  --color-accent2: 152 163 146;   /* #98A392  — acento secundario */
+}
+
+.dark {
+  --color-bg:      35  33  32;    /* #232120  — fondo principal */
+  --color-surface: 47  45  43;    /* #2F2D2B  — tarjetas, menús */
+  --color-ink:     223 216 200;   /* #DFD8C8  — texto principal */
+  --color-muted:   138 132 128;   /* #8A8480  — texto secundario */
+  --color-rim:     61  59  56;    /* #3D3B38  — bordes/divisores */
+  --color-accent:  197 160 89;    /* #C5A059  — acento principal */
+  --color-accent2: 130 92  98;    /* #825C62  — acento secundario */
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -11,6 +35,6 @@ body {
 }
 
 ::selection {
-  background: #d4b48a;
-  color: #321f10;
+  background: rgb(var(--color-accent) / 0.35);
+  color: rgb(var(--color-ink));
 }

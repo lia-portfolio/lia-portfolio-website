@@ -18,12 +18,12 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-brand-50 dark:bg-[#1c160f] border-b border-brand-200 dark:border-brand-800">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-bg border-b border-rim">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <button
           onClick={() => scrollTo('hero')}
-          className="font-serif italic text-xl tracking-wide text-brand-900 dark:text-brand-100 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+          className="font-serif italic text-xl tracking-wide text-ink hover:text-accent transition-colors"
         >
           Lia Viniegra
         </button>
@@ -34,7 +34,7 @@ export function Navbar() {
             <button
               key={link.id}
               onClick={() => scrollTo(link.id)}
-              className="font-sans text-xs tracking-widest uppercase text-brand-700 dark:text-brand-300 hover:text-brand-900 dark:hover:text-brand-100 transition-colors"
+              className="font-sans text-xs tracking-widest uppercase text-muted hover:text-ink transition-colors"
             >
               {link.label}
             </button>
@@ -46,7 +46,7 @@ export function Navbar() {
           <button
             onClick={toggleDark}
             aria-label="Toggle dark mode"
-            className="p-2 text-brand-600 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-100 transition-colors"
+            className="p-2 text-muted hover:text-ink transition-colors"
           >
             {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
@@ -54,7 +54,7 @@ export function Navbar() {
           <button
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Toggle menu"
-            className="md:hidden p-2 text-brand-600 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-100 transition-colors"
+            className="md:hidden p-2 text-muted hover:text-ink transition-colors"
           >
             {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
@@ -63,12 +63,12 @@ export function Navbar() {
 
       {/* Mobile nav */}
       {menuOpen && (
-        <nav className="md:hidden border-t border-brand-200 dark:border-brand-800 bg-brand-50 dark:bg-[#1c160f] px-6 py-5 flex flex-col gap-5">
+        <nav className="md:hidden border-t border-rim bg-bg px-6 py-5 flex flex-col gap-5">
           {navLinks.map((link) => (
             <button
               key={link.id}
               onClick={() => { scrollTo(link.id); setMenuOpen(false) }}
-              className="text-left font-sans text-xs tracking-widest uppercase text-brand-700 dark:text-brand-300 hover:text-brand-900 dark:hover:text-brand-100 transition-colors"
+              className="text-left font-sans text-xs tracking-widest uppercase text-muted hover:text-ink transition-colors"
             >
               {link.label}
             </button>

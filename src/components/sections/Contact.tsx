@@ -39,31 +39,31 @@ const contactItems = [
 
 export function Contact() {
   return (
-    <section id="contact" className="py-28 px-6 bg-brand-100/50 dark:bg-[#231b12]/60">
+    <section id="contact" className="py-28 px-6 bg-surface/40">
       <div className="max-w-lg mx-auto">
         <div className="flex items-center gap-5 mb-20 justify-center">
-          <span className="block flex-1 max-w-[80px] h-px bg-brand-300 dark:bg-brand-700" />
-          <h2 className="font-serif italic font-light text-3xl tracking-wide text-brand-900 dark:text-brand-100">
+          <span className="block flex-1 max-w-[80px] h-px bg-rim" />
+          <h2 className="font-serif italic font-light text-3xl tracking-wide text-ink">
             Contact Me
           </h2>
-          <span className="block flex-1 max-w-[80px] h-px bg-brand-300 dark:bg-brand-700" />
+          <span className="block flex-1 max-w-[80px] h-px bg-rim" />
         </div>
 
-        <div className="flex flex-col divide-y divide-brand-200 dark:divide-brand-800 border border-brand-200 dark:border-brand-800">
+        <div className="flex flex-col divide-y divide-rim border border-rim">
           {contactItems.map(({ icon: Icon, label, href, text }) => (
             <a
               key={label}
               href={href!}
               target={href?.startsWith('mailto') || href?.startsWith('tel') ? undefined : '_blank'}
               rel="noopener noreferrer"
-              className="group flex items-center gap-5 px-6 py-5 bg-brand-50 dark:bg-[#1c160f] hover:bg-brand-100 dark:hover:bg-[#231b12] transition-colors"
+              className="group flex items-center gap-5 px-6 py-5 bg-bg hover:bg-surface transition-colors"
             >
-              <Icon className="w-4 h-4 text-brand-500 dark:text-brand-500 shrink-0" />
+              <Icon className="w-4 h-4 text-accent shrink-0" />
               <div>
-                <p className="font-sans text-[10px] tracking-widest uppercase text-brand-400 dark:text-brand-600 mb-0.5">
+                <p className="font-sans text-[10px] tracking-widest uppercase text-muted mb-0.5">
                   {label}
                 </p>
-                <p className="font-sans text-base text-brand-800 dark:text-brand-200 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                <p className="font-sans text-base text-ink group-hover:text-accent transition-colors">
                   {text}
                 </p>
               </div>

@@ -22,7 +22,7 @@ const TABS: { id: Tab; label: string }[] = [
 ]
 
 const inputCls =
-  'flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition text-sm'
+  'flex-1 px-4 py-2.5 border border-rim bg-bg text-ink placeholder-muted focus:outline-none focus:ring-1 focus:ring-accent transition text-sm'
 
 function Field({
   label,
@@ -39,14 +39,14 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
+      <label className="text-sm font-medium text-ink">{label}</label>
       {multiline ? (
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
           rows={4}
           placeholder={placeholder}
-          className={`w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition text-sm resize-y`}
+          className={`w-full px-4 py-2.5 border border-rim bg-bg text-ink placeholder-muted focus:outline-none focus:ring-1 focus:ring-accent transition text-sm resize-y`}
         />
       ) : (
         <input
@@ -98,7 +98,7 @@ function MediaField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
+      <label className="text-sm font-medium text-ink">{label}</label>
       <div className="flex gap-2">
         <input
           type="text"
@@ -112,7 +112,7 @@ function MediaField({
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
           title="Upload file"
-          className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
+          className="flex items-center gap-1.5 px-3 py-2.5 border border-rim text-sm font-medium text-ink hover:bg-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
         >
           {uploading
             ? <Loader2 className="w-4 h-4 animate-spin" />
@@ -201,14 +201,14 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-bg">
       {/* Top bar */}
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex items-center justify-between">
+      <header className="bg-surface border-b border-rim px-6 py-4 flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 className="font-serif italic text-xl font-light text-ink">
             Admin Panel
           </h1>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+          <p className="text-xs text-muted mt-0.5">
             lia-portfolio / lia-portfolio-website
           </p>
         </div>
@@ -216,7 +216,7 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
           <button
             onClick={handleSave}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent/80 disabled:opacity-50 disabled:cursor-not-allowed text-bg text-sm font-medium transition-colors"
           >
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -227,7 +227,7 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
           </button>
           <button
             onClick={onLogout}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 border border-rim text-ink hover:bg-surface text-sm font-medium transition-colors"
           >
             <LogOut className="w-4 h-4" />
             Logout
@@ -237,15 +237,15 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
 
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Tabs */}
-        <div className="flex gap-1 mb-8 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-1.5">
+        <div className="flex gap-1 mb-8 bg-surface border border-rim p-1.5">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex-1 py-2 px-3 text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? 'bg-brand-600 text-white shadow-sm'
-                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  ? 'bg-accent text-bg'
+                  : 'text-muted hover:bg-bg'
               }`}
             >
               {tab.label}
@@ -254,11 +254,11 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
         </div>
 
         {/* Tab content */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 flex flex-col gap-6">
+        <div className="bg-surface border border-rim p-6 flex flex-col gap-6">
           {/* ── Hero ── */}
           {activeTab === 'hero' && (
             <>
-              <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+              <h2 className="font-serif italic text-lg font-light text-ink">
                 Hero Section
               </h2>
               <Field
@@ -295,7 +295,7 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
           {/* ── About ── */}
           {activeTab === 'about' && (
             <>
-              <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+              <h2 className="font-serif italic text-lg font-light text-ink">
                 About Me
               </h2>
               <Field
@@ -320,12 +320,12 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
           {activeTab === 'paintings' && (
             <>
               <div className="flex items-center justify-between">
-                <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+                <h2 className="font-serif italic text-lg font-light text-ink">
                   Paintings
                 </h2>
                 <button
                   onClick={addPainting}
-                  className="flex items-center gap-1.5 text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors"
+                  className="flex items-center gap-1.5 text-sm text-accent hover:text-accent/70 font-medium transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   Add Painting
@@ -334,10 +334,10 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
               {form.paintings.map((p, i) => (
                 <div
                   key={p.id}
-                  className="border border-gray-100 dark:border-gray-800 rounded-xl p-4 flex flex-col gap-4"
+                  className="border border-rim p-4 flex flex-col gap-4"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    <span className="text-xs font-medium text-muted uppercase tracking-wider">
                       Painting #{i + 1}
                     </span>
                     <button
@@ -385,12 +385,12 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
           {activeTab === 'otherWork' && (
             <>
               <div className="flex items-center justify-between">
-                <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+                <h2 className="font-serif italic text-lg font-light text-ink">
                   Other Work
                 </h2>
                 <button
                   onClick={addOtherWork}
-                  className="flex items-center gap-1.5 text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors"
+                  className="flex items-center gap-1.5 text-sm text-accent hover:text-accent/70 font-medium transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   Add Item
@@ -399,10 +399,10 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
               {form.otherWork.map((w, i) => (
                 <div
                   key={w.id}
-                  className="border border-gray-100 dark:border-gray-800 rounded-xl p-4 flex flex-col gap-4"
+                  className="border border-rim p-4 flex flex-col gap-4"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    <span className="text-xs font-medium text-muted uppercase tracking-wider">
                       Item #{i + 1}
                     </span>
                     <button
@@ -455,7 +455,7 @@ export function AdminPanel({ token, onLogout }: AdminPanelProps) {
           {/* ── Contact ── */}
           {activeTab === 'contact' && (
             <>
-              <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+              <h2 className="font-serif italic text-lg font-light text-ink">
                 Contact & Social
               </h2>
               <Field
