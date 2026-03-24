@@ -5,59 +5,49 @@ import type { SiteContent, OtherWorkItem } from '../../types/content'
 const { otherWork } = content as SiteContent
 
 const PLACEHOLDER_COLORS = [
-  'from-cyan-200 to-blue-300 dark:from-cyan-900 dark:to-gray-800',
-  'from-emerald-200 to-teal-300 dark:from-emerald-900 dark:to-gray-800',
-  'from-orange-200 to-red-300 dark:from-orange-900 dark:to-gray-800',
-  'from-indigo-200 to-violet-300 dark:from-indigo-900 dark:to-gray-800',
+  'from-stone-200 to-amber-100 dark:from-stone-800 dark:to-stone-900',
+  'from-rose-100 to-pink-100 dark:from-rose-900 dark:to-stone-900',
+  'from-amber-100 to-yellow-50 dark:from-amber-900 dark:to-stone-900',
+  'from-orange-100 to-red-100 dark:from-orange-900 dark:to-stone-900',
 ]
 
 function WorkCard({ item, index }: { item: OtherWorkItem; index: number }) {
   const gradient = PLACEHOLDER_COLORS[index % PLACEHOLDER_COLORS.length]
 
   const media = item.videoUrl ? (
-    <video
-      src={item.videoUrl}
-      className="w-full h-full object-cover"
-      autoPlay
-      muted
-      loop
-      playsInline
-    />
+    <video src={item.videoUrl} className="w-full h-full object-cover" autoPlay muted loop playsInline />
   ) : item.imageUrl ? (
     <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
   ) : (
     <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-      <span className="font-serif text-4xl font-bold text-white/40 select-none">
+      <span className="font-serif italic text-3xl font-light text-brand-400 dark:text-brand-600 select-none">
         {item.title[0]}
       </span>
     </div>
   )
 
   const inner = (
-    <div className="group relative overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
-      <div className="aspect-video">{media}</div>
-      <div className="p-5 bg-white dark:bg-gray-900">
+    <div className="group border border-brand-200 dark:border-brand-800 shadow-sm hover:shadow-md hover:border-brand-400 dark:hover:border-brand-600 transition-all duration-300">
+      <div className="aspect-video overflow-hidden">{media}</div>
+      <div className="p-5 bg-brand-50 dark:bg-[#231b12]">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+          <h3 className="font-serif italic font-light text-lg text-brand-900 dark:text-brand-100">
             {item.title}
           </h3>
           {item.link && (
-            <ExternalLink className="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0 mt-1 group-hover:text-brand-500 transition-colors" />
+            <ExternalLink className="w-3.5 h-3.5 text-brand-400 dark:text-brand-600 shrink-0 mt-1 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors" />
           )}
         </div>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
+        <p className="mt-2 font-sans text-sm text-brand-600 dark:text-brand-400 leading-relaxed">
+          {item.description}
+        </p>
       </div>
     </div>
   )
 
   if (item.link) {
     return (
-      <a
-        href={item.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-2xl block"
-      >
+      <a href={item.link} target="_blank" rel="noopener noreferrer" className="block focus:outline-none focus:ring-1 focus:ring-brand-500">
         {inner}
       </a>
     )
@@ -68,13 +58,17 @@ function WorkCard({ item, index }: { item: OtherWorkItem; index: number }) {
 
 export function OtherWork() {
   return (
-    <section id="other-work" className="py-24 px-6">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="font-serif text-4xl font-bold text-center mb-16 text-gray-900 dark:text-gray-100">
-          Other Work
-        </h2>
+    <section id="other-work" className="py-28 px-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center gap-5 mb-20 justify-center">
+          <span className="block flex-1 max-w-[80px] h-px bg-brand-300 dark:bg-brand-700" />
+          <h2 className="font-serif italic font-light text-3xl tracking-wide text-brand-900 dark:text-brand-100">
+            Other Work
+          </h2>
+          <span className="block flex-1 max-w-[80px] h-px bg-brand-300 dark:bg-brand-700" />
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {otherWork.map((item, i) => (
             <WorkCard key={item.id} item={item} index={i} />
           ))}

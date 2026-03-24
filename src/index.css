@@ -5,3 +5,12 @@
 html {
   scroll-behavior: smooth;
 }
+
+body {
+  font-feature-settings: "liga" 1, "kern" 1, "onum" 1;
+}
+
+::selection {
+  background: #d4b48a;
+  color: #321f10;
+}

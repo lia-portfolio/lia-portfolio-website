@@ -6,22 +6,25 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Playfair Display', 'Georgia', 'serif'],
+        sans: ['EB Garamond', 'Georgia', 'serif'],
+        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
       },
       colors: {
         brand: {
-          50: '#fdf4ff',
-          100: '#fae8ff',
-          200: '#f5d0fe',
-          300: '#f0abfc',
-          400: '#e879f9',
-          500: '#d946ef',
-          600: '#c026d3',
-          700: '#a21caf',
-          800: '#86198f',
-          900: '#701a75',
+          50:  '#faf7f2',
+          100: '#f5ede0',
+          200: '#e8d5b7',
+          300: '#d4b48a',
+          400: '#c49465',
+          500: '#a67c52',
+          600: '#8b6340',
+          700: '#6e4d31',
+          800: '#4f3621',
+          900: '#321f10',
         },
+      },
+      letterSpacing: {
+        widest: '0.25em',
       },
     },
   },

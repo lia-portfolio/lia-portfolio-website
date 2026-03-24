@@ -6,12 +6,12 @@ import type { SiteContent, Painting } from '../../types/content'
 const { paintings } = content as SiteContent
 
 const PLACEHOLDER_COLORS = [
-  'from-brand-200 to-brand-300 dark:from-brand-900 dark:to-gray-800',
-  'from-rose-200 to-pink-300 dark:from-rose-900 dark:to-gray-800',
-  'from-violet-200 to-purple-300 dark:from-violet-900 dark:to-gray-800',
-  'from-amber-200 to-orange-300 dark:from-amber-900 dark:to-gray-800',
-  'from-teal-200 to-cyan-300 dark:from-teal-900 dark:to-gray-800',
-  'from-lime-200 to-green-300 dark:from-lime-900 dark:to-gray-800',
+  'from-stone-200 to-amber-100 dark:from-stone-800 dark:to-stone-900',
+  'from-rose-100 to-pink-100 dark:from-rose-900 dark:to-stone-900',
+  'from-amber-100 to-yellow-50 dark:from-amber-900 dark:to-stone-900',
+  'from-orange-100 to-red-100 dark:from-orange-900 dark:to-stone-900',
+  'from-emerald-50 to-teal-50 dark:from-emerald-900 dark:to-stone-900',
+  'from-sky-50 to-indigo-100 dark:from-sky-900 dark:to-stone-900',
 ]
 
 function MediaPreview({ painting, gradient }: { painting: Painting; gradient: string }) {
@@ -28,13 +28,11 @@ function MediaPreview({ painting, gradient }: { painting: Painting; gradient: st
     )
   }
   if (painting.imageUrl) {
-    return (
-      <img src={painting.imageUrl} alt={painting.title} className="w-full h-full object-cover" />
-    )
+    return <img src={painting.imageUrl} alt={painting.title} className="w-full h-full object-cover" />
   }
   return (
     <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-      <span className="font-serif text-4xl font-bold text-white/40 select-none">
+      <span className="font-serif italic text-3xl font-light text-brand-400 dark:text-brand-600 select-none">
         {painting.title[0]}
       </span>
     </div>
@@ -43,27 +41,20 @@ function MediaPreview({ painting, gradient }: { painting: Painting; gradient: st
 
 function LightboxMedia({ painting }: { painting: Painting }) {
   if (painting.videoUrl) {
-    return (
-      <video
-        src={painting.videoUrl}
-        className="w-full max-h-[80vh] rounded-lg"
-        controls
-        autoPlay
-      />
-    )
+    return <video src={painting.videoUrl} className="w-full max-h-[80vh]" controls autoPlay />
   }
   if (painting.imageUrl) {
     return (
       <img
         src={painting.imageUrl}
         alt={painting.title}
-        className="w-full max-h-[80vh] object-contain rounded-lg"
+        className="w-full max-h-[80vh] object-contain"
       />
     )
   }
   return (
-    <div className="w-full aspect-[4/5] max-h-[70vh] bg-gradient-to-br from-brand-900 to-gray-800 rounded-lg flex items-center justify-center">
-      <span className="font-serif text-8xl font-bold text-white/20 select-none">
+    <div className="w-full aspect-[4/5] max-h-[70vh] bg-gradient-to-br from-brand-900 to-[#2e2418] flex items-center justify-center">
+      <span className="font-serif italic text-7xl font-light text-brand-700 select-none">
         {painting.title[0]}
       </span>
     </div>
@@ -84,17 +75,17 @@ function PaintingCard({
   return (
     <button
       onClick={() => onClick(painting)}
-      className="group relative overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-brand-500"
+      className="group relative overflow-hidden border border-brand-200 dark:border-brand-800 shadow-sm hover:shadow-md hover:border-brand-400 dark:hover:border-brand-600 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-brand-500"
       aria-label={`View ${painting.title}`}
     >
       <div className="aspect-[4/5]">
         <MediaPreview painting={painting} gradient={gradient} />
       </div>
       {/* Hover overlay */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex flex-col items-center justify-end p-6">
-        <div className="translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 text-center">
-          <p className="font-serif text-lg font-bold text-white">{painting.title}</p>
-          <p className="text-sm text-white/80 mt-1">{painting.description}</p>
+      <div className="absolute inset-0 bg-brand-900/0 group-hover:bg-brand-900/50 transition-all duration-400 flex flex-col items-center justify-end p-5">
+        <div className="translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 text-center">
+          <p className="font-serif italic text-base font-light text-white">{painting.title}</p>
+          <p className="font-sans text-xs text-white/70 mt-1 tracking-wide">{painting.description}</p>
         </div>
       </div>
     </button>
@@ -114,16 +105,17 @@ export function Paintings() {
   }, [selected])
 
   return (
-    <section id="paintings" className="py-24 px-6 bg-gray-50 dark:bg-gray-900/50">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="font-serif text-4xl font-bold text-center mb-4 text-gray-900 dark:text-gray-100">
-          My Paintings
-        </h2>
-        <p className="text-center text-gray-500 dark:text-gray-400 mb-16">
-          Click a painting to view it in detail
-        </p>
+    <section id="paintings" className="py-28 px-6 bg-brand-100/50 dark:bg-[#231b12]/60">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center gap-5 mb-20 justify-center">
+          <span className="block flex-1 max-w-[80px] h-px bg-brand-300 dark:bg-brand-700" />
+          <h2 className="font-serif italic font-light text-3xl tracking-wide text-brand-900 dark:text-brand-100">
+            My Paintings
+          </h2>
+          <span className="block flex-1 max-w-[80px] h-px bg-brand-300 dark:bg-brand-700" />
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {paintings.map((painting, i) => (
             <PaintingCard
               key={painting.id}
@@ -138,22 +130,22 @@ export function Paintings() {
       {/* Lightbox */}
       {selected && (
         <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-6"
+          className="fixed inset-0 z-50 bg-brand-900/95 flex items-center justify-center p-6"
           onClick={() => setSelected(null)}
         >
           <button
-            className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors"
+            className="absolute top-6 right-6 text-brand-300 hover:text-white transition-colors"
             onClick={() => setSelected(null)}
             aria-label="Close"
           >
-            <X className="w-8 h-8" />
+            <X className="w-6 h-6" />
           </button>
 
           <div className="max-w-3xl w-full" onClick={(e) => e.stopPropagation()}>
             <LightboxMedia painting={selected} />
-            <div className="mt-4 text-center">
-              <h3 className="font-serif text-2xl font-bold text-white">{selected.title}</h3>
-              <p className="text-white/60 mt-1">{selected.description}</p>
+            <div className="mt-5 text-center border-t border-brand-700 pt-5">
+              <h3 className="font-serif italic font-light text-xl text-brand-100">{selected.title}</h3>
+              <p className="font-sans text-xs tracking-widest uppercase text-brand-400 mt-1">{selected.description}</p>
             </div>
           </div>
         </div>
