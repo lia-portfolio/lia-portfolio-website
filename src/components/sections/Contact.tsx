@@ -39,32 +39,31 @@ const contactItems = [
 
 export function Contact() {
   return (
-    <section id="contact" className="py-24 px-6 bg-gray-50 dark:bg-gray-900/50">
-      <div className="max-w-2xl mx-auto text-center">
-        <h2 className="font-serif text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-          Contact Me
-        </h2>
-        <p className="text-gray-500 dark:text-gray-400 mb-16">
-          Get in touch — I'd love to hear from you.
-        </p>
+    <section id="contact" className="py-28 px-6 bg-brand-100/50 dark:bg-[#231b12]/60">
+      <div className="max-w-lg mx-auto">
+        <div className="flex items-center gap-5 mb-20 justify-center">
+          <span className="block flex-1 max-w-[80px] h-px bg-brand-300 dark:bg-brand-700" />
+          <h2 className="font-serif italic font-light text-3xl tracking-wide text-brand-900 dark:text-brand-100">
+            Contact Me
+          </h2>
+          <span className="block flex-1 max-w-[80px] h-px bg-brand-300 dark:bg-brand-700" />
+        </div>
 
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col divide-y divide-brand-200 dark:divide-brand-800 border border-brand-200 dark:border-brand-800">
           {contactItems.map(({ icon: Icon, label, href, text }) => (
             <a
               key={label}
               href={href!}
               target={href?.startsWith('mailto') || href?.startsWith('tel') ? undefined : '_blank'}
               rel="noopener noreferrer"
-              className="group flex items-center gap-5 p-5 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md hover:border-brand-200 dark:hover:border-brand-800 transition-all duration-200"
+              className="group flex items-center gap-5 px-6 py-5 bg-brand-50 dark:bg-[#1c160f] hover:bg-brand-100 dark:hover:bg-[#231b12] transition-colors"
             >
-              <div className="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center shrink-0 group-hover:bg-brand-100 dark:group-hover:bg-brand-900/50 transition-colors">
-                <Icon className="w-6 h-6 text-brand-600 dark:text-brand-400" />
-              </div>
-              <div className="text-left">
-                <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-0.5">
+              <Icon className="w-4 h-4 text-brand-500 dark:text-brand-500 shrink-0" />
+              <div>
+                <p className="font-sans text-[10px] tracking-widest uppercase text-brand-400 dark:text-brand-600 mb-0.5">
                   {label}
                 </p>
-                <p className="text-lg font-medium text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                <p className="font-sans text-base text-brand-800 dark:text-brand-200 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
                   {text}
                 </p>
               </div>
