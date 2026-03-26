@@ -1,4 +1,4 @@
-import { createHashRouter, RouterProvider, Outlet } from 'react-router-dom'
+import { createHashRouter, RouterProvider, Outlet, useRouteError } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext'
 import { Layout } from './components/layout/Layout'
 import { Hero } from './components/sections/Hero'
@@ -8,6 +8,17 @@ import { OtherWork } from './components/sections/OtherWork'
 import { Contact } from './components/sections/Contact'
 import { AdminRoute } from './admin/AdminRoute'
 
+function RouteError() {
+  const error = useRouteError() as { message?: string } | undefined
+  return (
+    <div style={{ padding: '2rem', fontFamily: 'sans-serif', textAlign: 'center' }}>
+      <h1>Algo ha ido mal</h1>
+      <p>{error?.message ?? 'Ha ocurrido un error inesperado.'}</p>
+      <a href="/">Volver al inicio</a>
+    </div>
+  )
+}
+
 const router = createHashRouter([
   {
     path: '/',
@@ -16,6 +27,7 @@ const router = createHashRouter([
         <Outlet />
       </Layout>
     ),
+    errorElement: <RouteError />,
     children: [
       {
         index: true,
@@ -34,6 +46,7 @@ const router = createHashRouter([
   {
     path: '/admin',
     element: <AdminRoute />,
+    errorElement: <RouteError />,
   },
 ])
 
