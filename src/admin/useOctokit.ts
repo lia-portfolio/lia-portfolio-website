@@ -43,14 +43,13 @@ export function useOctokit(token: string) {
   const uploadFile = async (file: File): Promise<string> => {
     const octokit = new Octokit({ auth: token })
 
-    // Read as raw binary → Base64 (correct for binary files like images/videos)
-    const buffer = await file.arrayBuffer()
-    const bytes = new Uint8Array(buffer)
-    let binary = ''
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i])
-    }
-    const base64 = btoa(binary)
+    // Read as Base64 via FileReader (browser-native, efficient for large files)
+    const base64 = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve((reader.result as string).split(',')[1])
+      reader.onerror = () => reject(reader.error ?? new Error('File read failed'))
+      reader.readAsDataURL(file)
+    })
 
     // Unique filename: timestamp + sanitized original name
     const sanitized = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
