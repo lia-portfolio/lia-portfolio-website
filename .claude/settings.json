@@ -4,7 +4,8 @@
       "Bash(npm run:*)",
       "Bash(npx tsc:*)",
       "Bash(./node_modules/.bin/tsc --noEmit)",
-      "Bash(node_modules/.bin/vite build:*)"
+      "Bash(node_modules/.bin/vite build:*)",
+      "Bash(find c:codelia-portfolio-website -maxdepth 2 -type f -name *.md)"
     ]
   }
 }
