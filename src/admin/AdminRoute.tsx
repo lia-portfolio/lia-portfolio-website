@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AdminLogin } from './AdminLogin'
 import { AdminPanel } from './AdminPanel'
+import { ErrorBoundary } from '../App'
 
 export function AdminRoute() {
   const [token, setToken] = useState<string | null>(
@@ -12,12 +13,14 @@ export function AdminRoute() {
   }
 
   return (
-    <AdminPanel
-      token={token}
-      onLogout={() => {
-        sessionStorage.removeItem('gh_pat')
-        setToken(null)
-      }}
-    />
+    <ErrorBoundary>
+      <AdminPanel
+        token={token}
+        onLogout={() => {
+          sessionStorage.removeItem('gh_pat')
+          setToken(null)
+        }}
+      />
+    </ErrorBoundary>
   )
 }

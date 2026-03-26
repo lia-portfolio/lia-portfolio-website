@@ -1,4 +1,5 @@
 import { createHashRouter, RouterProvider, Outlet, useRouteError } from 'react-router-dom'
+import { Component, type ReactNode } from 'react'
 import { ThemeProvider } from './context/ThemeContext'
 import { Layout } from './components/layout/Layout'
 import { Hero } from './components/sections/Hero'
@@ -14,9 +15,34 @@ function RouteError() {
     <div style={{ padding: '2rem', fontFamily: 'sans-serif', textAlign: 'center' }}>
       <h1>Algo ha ido mal</h1>
       <p>{error?.message ?? 'Ha ocurrido un error inesperado.'}</p>
-      <a href="/">Volver al inicio</a>
+      <a href="/lia-portfolio-website/">Volver al inicio</a>
     </div>
   )
+}
+
+interface ErrorBoundaryState { hasError: boolean; message: string }
+
+export class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
+  state: ErrorBoundaryState = { hasError: false, message: '' }
+
+  static getDerivedStateFromError(error: unknown): ErrorBoundaryState {
+    const message = error instanceof Error ? error.message : 'Error inesperado.'
+    return { hasError: true, message }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '2rem', fontFamily: 'sans-serif', textAlign: 'center' }}>
+          <p style={{ color: '#c0392b', marginBottom: '1rem' }}>{this.state.message}</p>
+          <button onClick={() => this.setState({ hasError: false, message: '' })}>
+            Reintentar
+          </button>
+        </div>
+      )
+    }
+    return this.props.children
+  }
 }
 
 const router = createHashRouter([

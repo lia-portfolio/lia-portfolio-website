@@ -11,33 +11,57 @@ export function useOctokit(token: string) {
     const octokit = new Octokit({ auth: token })
 
     // Step 1: Get the current SHA (required by GitHub API for updates)
-    const { data } = await octokit.rest.repos.getContent({
-      owner: OWNER,
-      repo: REPO,
-      path: FILE_PATH,
-      ref: BRANCH,
-    })
+    let sha: string
+    try {
+      const { data } = await octokit.rest.repos.getContent({
+        owner: OWNER,
+        repo: REPO,
+        path: FILE_PATH,
+        ref: BRANCH,
+      })
 
-    if (Array.isArray(data) || data.type !== 'file') {
-      throw new Error('Unexpected API response: path resolves to a directory')
+      if (Array.isArray(data) || data.type !== 'file') {
+        throw new Error('Unexpected API response: path resolves to a directory')
+      }
+
+      sha = data.sha
+    } catch (err) {
+      const status = (err as { status?: number }).status
+      if (status === 401 || status === 403) {
+        throw new Error('Token inválido o sin permisos de escritura en el repositorio.')
+      }
+      if (status === 404) {
+        throw new Error('No se encontró el archivo de contenido en el repositorio. Verifica la configuración.')
+      }
+      throw err
     }
-
-    const sha = data.sha
 
     // Step 2: Encode the new JSON as Base64 (Unicode-safe)
     const jsonString = JSON.stringify(newContent, null, 2)
     const encoded = btoa(unescape(encodeURIComponent(jsonString)))
 
     // Step 3: Commit the updated file
-    await octokit.rest.repos.createOrUpdateFileContents({
-      owner: OWNER,
-      repo: REPO,
-      path: FILE_PATH,
-      message: 'chore: update site content via admin panel',
-      content: encoded,
-      sha,
-      branch: BRANCH,
-    })
+    try {
+      await octokit.rest.repos.createOrUpdateFileContents({
+        owner: OWNER,
+        repo: REPO,
+        path: FILE_PATH,
+        message: 'chore: update site content via admin panel',
+        content: encoded,
+        sha,
+        branch: BRANCH,
+      })
+    } catch (err) {
+      const status = (err as { status?: number }).status
+      const message = (err as { message?: string }).message ?? ''
+      if (status === 409 || message.includes('Object not found here') || message.includes('sha')) {
+        throw new Error('Conflicto al guardar: el archivo fue modificado simultáneamente. Vuelve a intentarlo.')
+      }
+      if (status === 401 || status === 403) {
+        throw new Error('Token inválido o sin permisos de escritura en el repositorio.')
+      }
+      throw err
+    }
   }
 
   const uploadFile = async (file: File): Promise<string> => {
@@ -57,14 +81,25 @@ export function useOctokit(token: string) {
     const filePath = `public/uploads/${uniqueName}`
 
     // Commit the file (always new due to timestamp prefix, no SHA needed)
-    await octokit.rest.repos.createOrUpdateFileContents({
-      owner: OWNER,
-      repo: REPO,
-      path: filePath,
-      message: `chore: upload media ${uniqueName}`,
-      content: base64,
-      branch: BRANCH,
-    })
+    try {
+      await octokit.rest.repos.createOrUpdateFileContents({
+        owner: OWNER,
+        repo: REPO,
+        path: filePath,
+        message: `chore: upload media ${uniqueName}`,
+        content: base64,
+        branch: BRANCH,
+      })
+    } catch (err) {
+      const status = (err as { status?: number }).status
+      if (status === 401 || status === 403) {
+        throw new Error('Token inválido o sin permisos de escritura en el repositorio.')
+      }
+      if (status === 404) {
+        throw new Error('No se pudo subir el archivo: repositorio o rama no encontrados. Verifica la configuración.')
+      }
+      throw err
+    }
 
     // Return the public GitHub Pages URL
     return `/lia-portfolio-website/uploads/${uniqueName}`
